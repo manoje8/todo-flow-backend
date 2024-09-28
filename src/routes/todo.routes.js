@@ -1,13 +1,14 @@
 import { Router } from "express";
 import Todo from "../controller/todo.controller.js";
+import { verifyAccessToken } from "../utils/jwtHelper.js";
 
 const todoRouter = Router()
 
 // Route to get all todos
-todoRouter.get("/", Todo.getTodos);
+todoRouter.get("/", verifyAccessToken, Todo.getTodos);
 
 // Route to add a new todo
-todoRouter.post("/", Todo.addTodo);
+todoRouter.post("/", verifyAccessToken ,Todo.addTodo);
 
 // Route to edit an existing todo
 todoRouter.put("/:todoId", Todo.editTodo);

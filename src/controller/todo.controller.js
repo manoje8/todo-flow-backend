@@ -1,12 +1,14 @@
 import todoModel from "../model/todo.model.js";
+import userModel from "../model/user.model.js";
 
 class Todo
 {
     static async getTodos(req, res, next)
     {
+        const {aud} = req.payload;
         try 
         {
-            const todos = await todoModel.find();
+            const todos = await todoModel.find({userId: aud});
             res.status(200).send(todos)
         } 
         catch (error) 
@@ -18,9 +20,23 @@ class Todo
     
     static async addTodo (req, res, next)
     {
+        const {title, note, location, date, status} = req.body
+        const {aud} = req.payload;
+        
         try 
         {
-            const newTodo = await todoModel.create(req.body)
+            const user = await userModel.findById(aud)
+
+            if(!user) return res.status(404).send({error: "User not found"})
+
+            const newTodo = await todoModel.create({
+                title,
+                note,
+                location,
+                date,
+                status,
+                userId: aud
+            })
             res.status(200).send(newTodo)
         } 
         catch (error) 
