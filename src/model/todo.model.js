@@ -7,8 +7,8 @@ const todoSchema = new Schema(
         date: {type: Date},
         location: {type: String},
         status: { type: Boolean, default:false},
-        userId: {type: Schema.Types.ObjectId, ref: "users"}
-        // category: {type: String, default: 'remainder'} // Todo
+        userId: {type: Schema.Types.ObjectId, ref: "users"},
+        categoryId: { type: Schema.Types.ObjectId, ref: "Categories", required: true }
     },
     {
         timestamps: true

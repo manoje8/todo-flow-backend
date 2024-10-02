@@ -10,6 +10,9 @@ todoRouter.get("/", verifyAccessToken, Todo.getTodos);
 // Route to add a new todo
 todoRouter.post("/", verifyAccessToken ,Todo.addTodo);
 
+// Route to get add todos by category Id
+todoRouter.get("/:id", verifyAccessToken, Todo.getTodoByCategoryId)
+
 // Route to edit an existing todo
 todoRouter.put("/:todoId", Todo.editTodo);
 

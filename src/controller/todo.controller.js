@@ -1,3 +1,4 @@
+import categoryModel from "../model/category.model.js";
 import todoModel from "../model/todo.model.js";
 import userModel from "../model/user.model.js";
 
@@ -9,7 +10,8 @@ class Todo
         try 
         {
             const todos = await todoModel.find({userId: aud});
-            res.status(200).send(todos)
+            const category = await categoryModel.find({userId: aud})
+            res.status(200).send({todos,category})
         } 
         catch (error) 
         {
@@ -20,9 +22,9 @@ class Todo
     
     static async addTodo (req, res, next)
     {
-        const {title, note, location, date, status} = req.body
+        const {title, note, location, date, status, categoryId} = req.body
         const {aud} = req.payload;
-        
+        const categoryListId = categoryId === 'default' ? '000000000000000000000000' : categoryId
         try 
         {
             const user = await userModel.findById(aud)
@@ -35,13 +37,33 @@ class Todo
                 location,
                 date,
                 status,
-                userId: aud
+                userId: aud,
+                categoryId: categoryListId
             })
             res.status(200).send(newTodo)
         } 
         catch (error) 
         {
             console.log("Error in adding data: ", error);
+            next(error)
+        }
+    }
+
+    static async getTodoByCategoryId(req, res, next)
+    {
+        const {id} = req.params;
+        try 
+        {
+            const categoryListId = id === 'default' ? '000000000000000000000000' : id; // Handle 'default' case
+
+            // Fetch todos based on the category ID
+            const todos = await todoModel.find({ categoryId: categoryListId });
+
+            res.status(200).send(todos)
+        } 
+        catch (error) 
+        {
+            console.log("Error in fetching data by category Id: ", error);
             next(error)
         }
     }
